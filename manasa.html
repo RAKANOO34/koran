@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الشيخ عمر لتعلم القرآن</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: center;
+            padding: 0.5rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2rem;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .hero {
+            text-align: center;
+            padding: 2rem;
+            background-color: #f0f0f0;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #333;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        .auth-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .auth-section form {
+            margin: 20px auto;
+            width: 300px;
+            text-align: left;
+        }
+        .auth-section input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .auth-section button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .auth-section button:hover {
+            background-color: #45a049;
+        }
+        .video-section {
+            text-align: center;
+            margin: 20px 0;
+            display: none; /* إخفاء الفيديوهات حتى يتم تسجيل الدخول */
+        }
+        .video-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .video-container {
+            width: 300px;
+            text-align: center;
+        }
+        .video-container video {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>منصة الشيخ عمر لتعلم القرآن الكريم</h1>
+    </header>
+
+    <nav>
+        <a href="#videos">الفيديوهات</a>
+        <a href="#auth">تسجيل الدخول</a>
+    </nav>
+
+    <section class="hero">
+        <h1>مرحبًا بك في منصة الشيخ عمر لتعلم القرآن الكريم</h1>
+        <p>تعلم القرآن الكريم بسهولة ويسر مع أفضل الدروس والاختبارات التفاعلية.</p>
+    </section>
+
+    <!-- Authentication Section -->
+    <section class="auth-section" id="auth">
+        <h2>تسجيل الدخول</h2>
+        <form id="loginForm">
+            <h3>تسجيل الدخول</h3>
+            <input type="text" id="loginCode" placeholder="الكود الخاص بالمنصة" required>
+            <button type="button" onclick="login()">تسجيل الدخول</button>
+        </form>
+    </section>
+
+    <!-- Video Upload Section -->
+    <section class="video-section" id="videos">
+        <h2>رفع الفيديوهات</h2>
+        <input type="file" id="videoInput" accept="video/*">
+        <button onclick="addVideo()">رفع الفيديو</button>
+        <div class="video-gallery" id="videoGallery"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 منصة الشيخ عمر لتعلم القرآن الكريم. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script>
+        // قائمة الأكواد الخاصة التي تقوم أنت بصنعها
+        const validCodes = ["OMAR123", "QURAN456", "LEARN789"]; // أكواد ثابتة
+
+        // تسجيل الدخول
+        function login() {
+            const code = document.getElementById('loginCode').value;
+
+            if (validCodes.includes(code)) {
+                alert(`مرحبًا بك! تم تسجيل الدخول بنجاح.`);
+                document.getElementById('videos').style.display = 'block'; // عرض قسم الفيديوهات
+                document.getElementById('auth').style.display = 'none'; // إخفاء قسم تسجيل الدخول
+                loadSavedVideos(); // تحميل الفيديوهات المحفوظة
+            } else {
+                alert('الكود غير صحيح.');
+            }
+        }
+
+        // تحميل الفيديوهات المحفوظة
+        function loadSavedVideos() {
+            const gallery = document.getElementById('videoGallery');
+            const savedVideos = JSON.parse(localStorage.getItem('omarVideoGallery')) || [];
+            savedVideos.forEach(src => {
+                const container = createVideoContainer(src);
+                gallery.appendChild(container);
+            });
+        }
+
+        // رفع فيديو جديد
+        function addVideo() {
+            const input = document.getElementById('videoInput');
+            const gallery = document.getElementById('videoGallery');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const container = createVideoContainer(e.target.result);
+                    gallery.appendChild(container);
+                    saveVideoToLocalStorage(e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                alert("يرجى اختيار فيديو لرفعه.");
+            }
+        }
+
+        // إنشاء عنصر فيديو
+        function createVideoContainer(src) {
+            const container = document.createElement('div');
+            container.classList.add('video-container');
+
+            const video = document.createElement('video');
+            video.src = src;
+            video.controls = true;
+
+            container.appendChild(video);
+            return container;
+        }
+
+        // حفظ الفيديو في Local Storage
+        function saveVideoToLocalStorage(src) {
+            const savedVideos = JSON.parse(localStorage.getItem('omarVideoGallery')) || [];
+            savedVideos.push(src);
+            localStorage.setItem('omarVideoGallery', JSON.stringify(savedVideos));
+        }
+    </script>
+</body>
+</html>
